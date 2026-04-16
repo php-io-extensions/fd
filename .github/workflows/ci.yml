@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        php: ["8.1", "8.2", "8.3", "8.4"]
+        php: ["8.2", "8.3", "8.4"]
 
     steps:
       - name: Checkout
@@ -28,10 +28,6 @@ jobs:
           tools: none
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install build tools (Ubuntu)
-        if: runner.os == 'Linux'
-        run: sudo apt-get install -y --no-install-recommends gcc make php-dev
 
       - name: Build extension
         working-directory: ext

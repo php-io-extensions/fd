@@ -31,7 +31,7 @@ sudo mv pie.phar /usr/local/bin/pie
 Then install the extension:
 
 ```shell
-pie install scrapyard-robotics/fd
+pie install php-io-extensions/fd
 ```
 
 PIE will build the extension from source, copy the `.so` into PHP's extension directory, and write the ini activation file. No Zephir required — the C source is pre-generated in the package.
@@ -41,8 +41,8 @@ PIE will build the extension from source, copy the `.so` into PHP's extension di
 Clone the repository and run the bundled installer script. PHP dev headers and `gcc` must be present; Zephir is **not** required.
 
 ```shell
-git clone https://github.com/DeptOfScrapyardRobotics/FD
-cd FD
+git clone https://github.com/php-io-extensions/fd
+cd fd
 bash install.sh
 ```
 
