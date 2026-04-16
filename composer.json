@@ -1,0 +1,30 @@
+{
+    "name": "php-io-extensions/fd",
+    "type": "php-ext",
+    "description": "PHP-Controllable UNIX FileDescriptor Extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Project Saturn Studios, LLC",
+            "email": "info@projectsaturnstudios.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0"
+    },
+    "php-ext": {
+        "extension-name": "fd",
+        "priority": 30,
+        "build-path": "ext",
+        "support-zts": true,
+        "support-nts": true,
+        "os-families-exclude": ["windows"],
+        "configure-options": [
+            {
+                "name": "enable-fd",
+                "description": "Enable the fd extension",
+                "needs-value": false
+            }
+        ]
+    }
+}
