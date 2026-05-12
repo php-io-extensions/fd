@@ -129,6 +129,8 @@ step "📦 Installing binary..."
 $SUDO mkdir -p "$PHP_EXT_DIR"
 $SUDO cp -f "$BUILD_SO" "${PHP_EXT_DIR}/${EXTENSION_NAME}.so"
 $SUDO chmod 755 "${PHP_EXT_DIR}/${EXTENSION_NAME}.so"
+$SUDO codesign --force --sign - "${PHP_EXT_DIR}/${EXTENSION_NAME}.so"
+sleep 2  # allow macOS amfid to finish validating the freshly codesigned binary
 ok "Copied to: ${PHP_EXT_DIR}/${EXTENSION_NAME}.so"
 echo ""
 
@@ -177,12 +179,20 @@ echo ""
 
 # Verify CLI load
 step "🔍 Verifying installation (CLI)..."
-if php -m 2>/dev/null | grep -q "^fd$"; then
-    ok "Extension loaded successfully in CLI"
-else
-    echo ""
-    php -m 2>/dev/null | tail -n +1 >/dev/null || true
-    die "Extension not detected in CLI. Check ${INI_NAME} placement and php --ini."
+VERIFIED=0
+for attempt in 1 2 3 4 5; do
+    MODULE_LIST="$("$PHP_BIN_REAL" -m 2>&1 || true)"
+    if printf "%s\n" "$MODULE_LIST" | grep -qx "${EXTENSION_NAME}"; then
+        ok "Extension loaded successfully in CLI"
+        VERIFIED=1
+        break
+    fi
+    sleep 1
+done
+if [ "$VERIFIED" -eq 0 ]; then
+    printf "%s\n" "$MODULE_LIST" | grep -i "${EXTENSION_NAME}\|error\|warn\|killed" || true
+    "$PHP_BIN_REAL" --ini 2>/dev/null | grep -E "Loaded Configuration|Scan for additional|Additional \.ini" || true
+    die "Extension ${EXTENSION_NAME} not detected in CLI after retries. Check ${INI_NAME} placement and php --ini."
 fi
 echo ""
 
@@ -190,7 +200,7 @@ echo ""
 step "=========================================="
 step "Extension Information (CLI)"
 step "=========================================="
-php --ri fd || true
+"$PHP_BIN_REAL" --ri "${EXTENSION_NAME}" || true
 echo ""
 
 # Reload FPM if present

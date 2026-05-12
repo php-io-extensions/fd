@@ -3,7 +3,13 @@
     "name": "fd",
     "description": "PHP-Controllable FileDescriptor Extension",
     "author": "Project Saturn Studios, LLC",
-    "version": "0.1.2",
+    "version": "0.1.3",
+    "extra-sources": [
+        "api/fd-api.c"
+    ],
+    "optimizer-dirs": [
+        "optimizers"
+    ],
     "warnings": {
         "unused-variable": true,
         "unused-variable-external": true,

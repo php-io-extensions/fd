@@ -1,9 +1,5 @@
 namespace Fd;
 
-%{
-#include <fcntl.h>
-#include <unistd.h>
-}%
 class FD
 {
     public static function open(string device_path, int flags) -> int
@@ -11,10 +7,7 @@ class FD
         int result;
         var dp = device_path;
 
-        %{
-            result = open(Z_STRVAL_P(&dp), (int) flags);
-        }%
-
+        let result = open_file(dp, flags);
 
         return result;
     }
@@ -23,9 +16,7 @@ class FD
     {
         int result;
 
-        %{
-            result = close((int) _fd);
-        }%
+        let result = close_fd(_fd);
 
         return result;
     }
@@ -34,19 +25,7 @@ class FD
     {
         int result;
 
-        %{
-            int current_flags;
-            
-            // Get current file descriptor flags
-            current_flags = fcntl(_fd, F_GETFL, 0);
-            
-            if (current_flags < 0) {
-                result = -1;
-            } else {
-                // OR in the new flags and set them
-                result = fcntl(_fd, F_SETFL, current_flags | flags);
-            }
-        }%
+        let result = add_fd_flags(_fd, flags);
 
         return result;
     }
@@ -55,19 +34,7 @@ class FD
     {
         var result;
 
-        %{
-            char *_buf = emalloc((size_t) bytes_to_read + 1);
-            ssize_t _n = read((int) fd, _buf, (size_t) bytes_to_read);
-
-            if (_n < 0) {
-                efree(_buf);
-                ZVAL_EMPTY_STRING(&result);
-            } else {
-                _buf[_n] = '\0';
-                ZVAL_STRINGL(&result, _buf, (size_t) _n);
-                efree(_buf);
-            }
-        }%
+        let result = read_fd(fd, bytes_to_read);
 
         return result;
     }
@@ -76,9 +43,7 @@ class FD
     {
         int results;
 
-        %{
-            results = (zend_long) write((int) fd, (const char *) Z_STRVAL(data), (size_t) bytes_to_write);
-        }%
+        let results = write_fd(fd, data, bytes_to_write);
 
         return results;
     }

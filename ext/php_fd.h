@@ -11,7 +11,7 @@
 #include "kernel/globals.h"
 
 #define PHP_FD_NAME        "fd"
-#define PHP_FD_VERSION     "0.1.0"
+#define PHP_FD_VERSION     "0.1.3"
 #define PHP_FD_EXTNAME     "fd"
 #define PHP_FD_AUTHOR      "Project Saturn Studios, LLC"
 #define PHP_FD_ZEPVERSION  "0.19.0-$Id$"

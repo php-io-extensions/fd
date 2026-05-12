@@ -9,8 +9,8 @@ if test "$PHP_FD" = "yes"; then
 	fi
 
 	AC_DEFINE(HAVE_FD, 1, [Whether you have Fd])
-	fd_sources="fd.c kernel/main.c kernel/memory.c kernel/exception.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/math.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c fd/fd.zep.c "
-	PHP_NEW_EXTENSION(fd, $fd_sources, $ext_shared,, -Wno-error=incompatible-pointer-types -Wno-pointer-compare)
+	fd_sources="fd.c kernel/main.c kernel/memory.c kernel/exception.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/math.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c fd/fd.zep.c api/fd-api.c"
+	PHP_NEW_EXTENSION(fd, $fd_sources, $ext_shared,, )
 	PHP_ADD_BUILD_DIR([$ext_builddir/kernel/])
 	for dir in "fd"; do
 		PHP_ADD_BUILD_DIR([$ext_builddir/$dir])
