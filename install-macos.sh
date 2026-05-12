@@ -106,26 +106,6 @@ echo ""
 step "🔨 Generating C sources..."
 "$ZEPHIR" generate >>"$LOG_FILE" 2>&1 || true
 
-# ── Patch generated kernel files for PHP 8.4 ─────────────────────────────────
-# ext/kernel/require.c and ext/kernel/file.c pass zend_string* to zval_ptr_dtor()
-# which is a type error.  The correct destructor is zend_string_release().
-# macOS clang accepts this with a warning; GCC on Linux/Raspberry Pi fails hard.
-# Patching here keeps the ext/ tree clean for both platforms and for PIE/Packagist.
-step "   Patching ext/kernel for PHP 8.4 compatibility..."
-REQUIRE_C="${SCRIPT_DIR}/ext/kernel/require.c"
-FILE_C="${SCRIPT_DIR}/ext/kernel/file.c"
-if [ -f "$REQUIRE_C" ]; then
-    sed -i.bak \
-        's/zval_ptr_dtor(zend_string_path)/zend_string_release(zend_string_path)/g' \
-        "$REQUIRE_C" && rm -f "${REQUIRE_C}.bak"
-    ok "Patched ext/kernel/require.c"
-fi
-if [ -f "$FILE_C" ]; then
-    sed -i.bak \
-        's/zval_ptr_dtor(file)/zend_string_release(file)/g' \
-        "$FILE_C" && rm -f "${FILE_C}.bak"
-    ok "Patched ext/kernel/file.c"
-fi
 
 # ── Compile ───────────────────────────────────────────────────────────────────
 step "   Compiling..."

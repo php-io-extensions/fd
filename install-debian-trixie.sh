@@ -96,25 +96,6 @@ echo ""
 step "🔨 Generating C sources..."
 "$ZEPHIR" generate >>"$LOG_FILE" 2>&1 || true
 
-# ── Patch generated kernel files for PHP 8.4 / GCC 14 ────────────────────────
-# ext/kernel/require.c and ext/kernel/file.c pass zend_string* to zval_ptr_dtor(),
-# which expects zval*.  GCC 14 on Trixie treats this as a hard compile error.
-# The correct destructor for zend_string* is zend_string_release().
-step "   Patching ext/kernel for PHP 8.4 / GCC 14..."
-REQUIRE_C="${SCRIPT_DIR}/ext/kernel/require.c"
-FILE_C="${SCRIPT_DIR}/ext/kernel/file.c"
-if [ -f "$REQUIRE_C" ]; then
-    sed -i \
-        's/zval_ptr_dtor(zend_string_path)/zend_string_release(zend_string_path)/g' \
-        "$REQUIRE_C"
-    ok "Patched ext/kernel/require.c"
-fi
-if [ -f "$FILE_C" ]; then
-    sed -i \
-        's/zval_ptr_dtor(file)/zend_string_release(file)/g' \
-        "$FILE_C"
-    ok "Patched ext/kernel/file.c"
-fi
 
 # ── Compile ───────────────────────────────────────────────────────────────────
 step "   Compiling..."
