@@ -3,7 +3,7 @@
     "name": "fd",
     "description": "PHP-Controllable FileDescriptor Extension",
     "author": "Project Saturn Studios, LLC",
-    "version": "0.1.3",
+    "version": "0.1.5",
     "extra-sources": [
         "api/fd-api.c"
     ],

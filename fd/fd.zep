@@ -2,10 +2,10 @@ namespace Fd;
 
 class FD
 {
-    public static function open(string device_path, int flags) -> int
+    public static function open(var device_path, int flags) -> int
     {
         int result;
-        var dp = device_path;
+        string dp = device_path;
 
         let result = open_file(dp, flags);
 
@@ -39,11 +39,12 @@ class FD
         return result;
     }
 
-    public static function write(int fd, string data, int bytes_to_write) -> int
+    public static function write(int fd, var data, int bytes_to_write) -> int
     {
         int results;
+        string payload = data;
 
-        let results = write_fd(fd, data, bytes_to_write);
+        let results = write_fd(fd, payload, bytes_to_write);
 
         return results;
     }
